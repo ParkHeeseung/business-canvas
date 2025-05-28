@@ -3,6 +3,7 @@ import type { MemberRecord } from '../types/record'
 import type { FieldDefinition } from '../types/fields'
 
 import { Modal, Form, Input, DatePicker, Select, Checkbox } from 'antd'
+import dayjs from 'dayjs'
 
 interface UseRecordModalOptions {
   fields: FieldDefinition[]
@@ -11,10 +12,20 @@ interface UseRecordModalOptions {
 
 export const useRecordModal = ({ fields, onSubmit }: UseRecordModalOptions) => {
   const [open, setOpen] = useState(false)
+  const [editing, setEditing] = useState<MemberRecord | null>(null)
   const [form] = Form.useForm()
 
-  const show = () => {
-    form.resetFields()
+  const show = (record?: MemberRecord) => {
+    if (record) {
+      setEditing(record)
+      form.setFieldsValue({
+        ...record,
+        joinedAt: dayjs(record.joinedAt),
+      })
+    } else {
+      setEditing(null)
+      form.resetFields()
+    }
     setOpen(true)
   }
 
@@ -28,19 +39,22 @@ export const useRecordModal = ({ fields, onSubmit }: UseRecordModalOptions) => {
       if (processed.joinedAt) {
         processed.joinedAt = processed.joinedAt.format('YYYY-MM-DD')
       }
-      onSubmit({ id: crypto.randomUUID(), ...processed })
+      const final: MemberRecord = editing
+        ? { ...editing, ...processed }
+        : { id: crypto.randomUUID(), ...processed }
+      onSubmit(final)
       close()
     })
   }
 
   const modal = (
     <Modal
-      title="회원 추가"
+      title={editing ? '회원 수정' : '회원 추가'}
       open={open}
       onCancel={close}
       onOk={handleOk}
       cancelText="취소"
-      okText="추가"
+      okText={editing ? '저장' : '추가'}
     >
       <Form form={form} layout="vertical">
         {fields.map((field) => (

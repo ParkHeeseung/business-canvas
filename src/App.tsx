@@ -6,6 +6,7 @@ import type { FieldDefinition } from './types/fields'
 import './App.css'
 import { useState } from 'react'
 import { useRecordModal } from './hooks/useRecordModal'
+import { RecordActionMenu } from './componets/RecordActionMenu'
 
 const coreFields: FieldDefinition[] = [
   { id: 'name', label: '이름', type: 'text', required: true, maxLen: 20 },
@@ -33,21 +34,43 @@ function App() {
   const { show, modal } = useRecordModal({
     fields: coreFields,
     onSubmit: (record) => {
-      setRecords((prev) => [...prev, record])
+      setRecords((prev) => {
+        const exists = prev.find((r) => r.id === record.id)
+        return exists
+          ? prev.map((r) => (r.id === record.id ? record : r))
+          : [...prev, record]
+      })
     },
   })
 
-  const columns: ColumnsType<MemberRecord> = coreFields.map((field) => ({
-    title: field.label,
-    dataIndex: field.id,
-    key: field.id,
-    render: (val) => {
-      if (field.type === 'checkbox') {
-        return <Checkbox checked={val} disabled />
-      }
-      return val
+  const columns: ColumnsType<MemberRecord> = [
+    ...coreFields.map((field) => ({
+      title: field.label,
+      dataIndex: field.id,
+      key: field.id,
+      render: (val: boolean) => {
+        if (field.type === 'checkbox') {
+          return <Checkbox checked={val} disabled />
+        }
+        return val
+      },
+    })),
+    {
+      title: '',
+      key: 'actions',
+      render: (_, record) => (
+        <RecordActionMenu
+          record={record}
+          onEdit={(rec) => {
+            show(rec)
+          }}
+          onDelete={(id) => {
+            setRecords((prev) => prev.filter((r) => r.id !== id))
+          }}
+        />
+      ),
     },
-  }))
+  ]
 
   return (
     <ConfigProvider>
@@ -69,7 +92,7 @@ function App() {
           >
             회원 목록
           </h1>
-          <Button type="primary" onClick={show}>
+          <Button type="primary" onClick={() => show()}>
             + 추가
           </Button>
         </div>
