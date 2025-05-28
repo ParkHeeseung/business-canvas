@@ -7,6 +7,11 @@ import './App.css'
 import { useState } from 'react'
 import { useRecordModal } from './hooks/useRecordModal'
 import { RecordActionMenu } from './componets/RecordActionMenu'
+import {
+  FilterDropdown,
+  type FilterState,
+  type FilterValue,
+} from './componets/FilterDropdown'
 
 const coreFields: FieldDefinition[] = [
   { id: 'name', label: '이름', type: 'text', required: true, maxLen: 20 },
@@ -30,6 +35,7 @@ const coreFields: FieldDefinition[] = [
 
 function App() {
   const [records, setRecords] = useState<MemberRecord[]>([])
+  const [filters, setFilters] = useState<FilterState>({})
 
   const { show, modal } = useRecordModal({
     fields: coreFields,
@@ -43,6 +49,17 @@ function App() {
     },
   })
 
+  const handleFilterChange = (fieldId: string, values: FilterValue[]) => {
+    setFilters((prev) => ({ ...prev, [fieldId]: values }))
+  }
+
+  const filteredRecords = records.filter((record) =>
+    Object.entries(filters).every(([fieldId, values]) => {
+      const val = record[fieldId as keyof MemberRecord]
+      return val !== undefined && values.includes(val)
+    })
+  )
+
   const columns: ColumnsType<MemberRecord> = [
     ...coreFields.map((field) => ({
       title: field.label,
@@ -54,6 +71,14 @@ function App() {
         }
         return val
       },
+      filterDropdown: () => (
+        <FilterDropdown
+          field={field}
+          records={records}
+          selected={filters[field.id] || []}
+          onChange={(next) => handleFilterChange(field.id, next)}
+        />
+      ),
     })),
     {
       title: '',
@@ -100,7 +125,7 @@ function App() {
         <Table<MemberRecord>
           rowKey="id"
           columns={columns}
-          dataSource={records}
+          dataSource={filteredRecords}
           pagination={false}
           bordered
         />
