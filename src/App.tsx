@@ -12,6 +12,7 @@ import {
   type FilterState,
   type FilterValue,
 } from './componets/FilterDropdown'
+import { useStorage } from './hooks/useStorage'
 
 const coreFields: FieldDefinition[] = [
   { id: 'name', label: '이름', type: 'text', required: true, maxLen: 20 },
@@ -33,8 +34,8 @@ const coreFields: FieldDefinition[] = [
   },
 ]
 
-function App() {
-  const [records, setRecords] = useState<MemberRecord[]>([])
+const App = () => {
+  const [records, setRecords] = useStorage<MemberRecord[]>('records', [])
   const [filters, setFilters] = useState<FilterState>({})
 
   const { show, modal } = useRecordModal({
