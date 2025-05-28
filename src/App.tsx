@@ -56,6 +56,8 @@ const App = () => {
 
   const filteredRecords = records.filter((record) =>
     Object.entries(filters).every(([fieldId, values]) => {
+      if (values.length === 0) return true
+
       const val = record[fieldId as keyof MemberRecord]
       return val !== undefined && values.includes(val)
     })
