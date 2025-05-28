@@ -1,0 +1,9 @@
+.container {
+  width: 1080px;
+  min-width: 1080px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 40px 16px;
+  min-height: 100vh;
+  color: #1f1f1f;
+}
