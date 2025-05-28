@@ -1,54 +1,29 @@
-# React + TypeScript + Vite
+# 비즈니스캔버스 프론트엔드 과제
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+회원 정보를 관리하는 테이블 기반의 프론트엔드 과제 프로젝트입니다.  
+React, TypeScript, Ant Design, Vite 기반으로 구성되어 있으며,  
+레코드 추가/수정/삭제, 필터링, 로컬 스토리지 저장 기능을 포함합니다.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 개발 환경
 
-## Expanding the ESLint configuration
+- Node.js: 20.19.2
+- npm: 10.8.2
+- React: 18.3.1
+- TypeScript: 5.8.3
+- Ant Design: 5.25.3
+- Vite: 6.3.5
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 실행 방법
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+npm install
+npm run dev
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 환경변수 설정
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+in-memory: 브라우저 새로고침 시 초기화
+local-storage: 브라우저 새로고침에도 데이터 유지됨
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+실제 서비스에서는 .env 파일을 Git에 포함하지 않지만,
+민감정보를 담고있지않아 넣어두었습니다.

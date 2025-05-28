@@ -70,7 +70,7 @@ const App = () => {
       key: field.id,
       render: (val: boolean) => {
         if (field.type === 'checkbox') {
-          return <Checkbox checked={val} disabled />
+          return <Checkbox checked={val} />
         }
         return val
       },
