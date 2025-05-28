@@ -39,6 +39,9 @@ export const useRecordModal = ({ fields, onSubmit }: UseRecordModalOptions) => {
       if (processed.joinedAt) {
         processed.joinedAt = processed.joinedAt.format('YYYY-MM-DD')
       }
+      if (typeof processed.newsletter === 'undefined') {
+        processed.newsletter = false
+      }
       const final: MemberRecord = editing
         ? { ...editing, ...processed }
         : { id: crypto.randomUUID(), ...processed }

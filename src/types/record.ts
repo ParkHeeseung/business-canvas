@@ -4,6 +4,6 @@ export interface MemberRecord {
   address?: string
   memo?: string
   joinedAt: string
-  job?: string // TODO: enum으로 분리
+  job?: string
   newsletter?: boolean
 }
