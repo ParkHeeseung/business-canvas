@@ -1,44 +1,54 @@
-import { Button, ConfigProvider, Table } from 'antd'
+import { Button, Checkbox, ConfigProvider, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { MemberRecord } from './types/record'
+import type { FieldDefinition } from './types/fields'
+
 import './App.css'
+import { useState } from 'react'
+import { useRecordModal } from './hooks/useRecordModal'
 
-const dataSource = [
+const coreFields: FieldDefinition[] = [
+  { id: 'name', label: '이름', type: 'text', required: true, maxLen: 20 },
+  { id: 'address', label: '주소', type: 'text', required: false, maxLen: 20 },
+  { id: 'memo', label: '메모', type: 'textarea', required: false, maxLen: 50 },
+  { id: 'joinedAt', label: '가입일', type: 'date', required: true },
   {
-    id: '1',
-    name: 'John Doe',
-    address: '서울 강남구',
-    memo: '외국인',
-    joinedAt: '2024-10-02',
-    job: '개발자',
-    newsletter: true,
+    id: 'job',
+    label: '직업',
+    type: 'select',
+    required: false,
+    options: ['개발자', 'PO', '디자이너'],
   },
   {
-    id: '2',
-    name: 'Foo Bar',
-    address: '서울 서초구',
-    memo: '한국인',
-    joinedAt: '2024-10-01',
-    job: 'PO',
-    newsletter: false,
-  },
-]
-
-const columns: ColumnsType<MemberRecord> = [
-  { title: '이름', dataIndex: 'name', key: 'name' },
-  { title: '주소', dataIndex: 'address', key: 'address' },
-  { title: '메모', dataIndex: 'memo', key: 'memo' },
-  { title: '가입일', dataIndex: 'joinedAt', key: 'joinedAt' },
-  { title: '직업', dataIndex: 'job', key: 'job' },
-  {
-    title: '이메일 수신 동의',
-    dataIndex: 'newsletter',
-    key: 'newsletter',
-    render: (val: boolean) => (val ? '✓' : ''),
+    id: 'newsletter',
+    label: '이메일 수신 동의',
+    type: 'checkbox',
+    required: false,
   },
 ]
 
 function App() {
+  const [records, setRecords] = useState<MemberRecord[]>([])
+
+  const { show, modal } = useRecordModal({
+    fields: coreFields,
+    onSubmit: (record) => {
+      setRecords((prev) => [...prev, record])
+    },
+  })
+
+  const columns: ColumnsType<MemberRecord> = coreFields.map((field) => ({
+    title: field.label,
+    dataIndex: field.id,
+    key: field.id,
+    render: (val) => {
+      if (field.type === 'checkbox') {
+        return <Checkbox checked={val} disabled />
+      }
+      return val
+    },
+  }))
+
   return (
     <ConfigProvider>
       <div className="container">
@@ -50,18 +60,29 @@ function App() {
             marginBottom: 24,
           }}
         >
-          <h1 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>
+          <h1
+            style={{
+              fontSize: 36,
+              fontWeight: 800,
+              margin: 0,
+            }}
+          >
             회원 목록
           </h1>
-          <Button type="primary">+ 추가</Button>
+          <Button type="primary" onClick={show}>
+            + 추가
+          </Button>
         </div>
+
         <Table<MemberRecord>
           rowKey="id"
           columns={columns}
-          dataSource={dataSource}
+          dataSource={records}
           pagination={false}
           bordered
         />
+
+        {modal}
       </div>
     </ConfigProvider>
   )
