@@ -41,8 +41,13 @@ export const FilterDropdown = ({
   }))
 
   return (
-    <div style={{ padding: 8 }}>
-      <Checkbox.Group options={options} value={selected} onChange={onChange} />
+    <div style={{ padding: 8, maxHeight: 200, overflowY: 'auto' }}>
+      <Checkbox.Group
+        style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
+        options={options}
+        value={selected}
+        onChange={onChange}
+      />
     </div>
   )
 }
