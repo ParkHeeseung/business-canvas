@@ -50,23 +50,31 @@ export const useRecordModal = ({ fields, onSubmit }: UseRecordModalOptions) => {
             name={field.id}
             // https://ant.design/components/checkbox
             valuePropName={field.type === 'checkbox' ? 'checked' : 'value'}
-            rules={
-              field.required
+            rules={[
+              ...(field.required
                 ? [
                     {
                       required: true,
-                      message: `${field.label}을 입력해주세요.`,
+                      message: `${field.label}은(는) 필수값입니다.`,
                     },
                   ]
-                : []
-            }
+                : []),
+              ...(field.type === 'text' || field.type === 'textarea'
+                ? [
+                    {
+                      max: field.maxLen,
+                      message: `글자수 ${field.maxLen}을 초과할 수 없습니다.`,
+                    },
+                  ]
+                : []),
+            ]}
           >
             {(() => {
               switch (field.type) {
                 case 'text':
-                  return <Input maxLength={field.maxLen} />
+                  return <Input />
                 case 'textarea':
-                  return <Input.TextArea maxLength={field.maxLen} rows={3} />
+                  return <Input.TextArea rows={3} />
                 case 'date':
                   return <DatePicker style={{ width: '100%' }} />
                 case 'select':
